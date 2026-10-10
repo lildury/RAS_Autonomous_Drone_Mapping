@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="ras_drone"> /el nombre del robot me imagino
+
+  /estos son los xacros para definir completamente las dimensiones del robot sin necesidad de cambiar todo
+  <xacro:property name="body_length" value="0.30"/>
+  <xacro:property name="body_width"  value="0.20"/>
+  <xacro:property name="body_height" value="0.08"/>
+
+  <link name="base_link"> /es el componente de la base del robot, mi primer punto de coordenadas
+
+    <visual> /el como y donde se va a ver
+
+      <origin xyz="0 0 0" rpy="0 0 0"/> /don de aparece el robot y no se que es rpy
+
+      <geometry> /la geometria del robot su ancho largo y alto
+        <box size="${body_length}
+                   ${body_width}
+                   ${body_height}"/>
+      </geometry>
+
+      <material name="dark_gray"> /el de que esta hecho con su color y transparencia le puso un nombre y todo
+        <color rgba="0.25 0.28 0.32 1.0"/>
+      </material>
+
+    </visual>
+
+  </link>
+
+</robot>
