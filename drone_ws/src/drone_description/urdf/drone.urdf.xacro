@@ -1,30 +1,81 @@
 <?xml version="1.0"?>
 
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="ras_drone"> /el nombre del robot me imagino
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro"
+       name="ras_drone">
 
-  /estos son los xacros para definir completamente las dimensiones del robot sin necesidad de cambiar todo
   <xacro:property name="body_length" value="0.30"/>
-  <xacro:property name="body_width"  value="0.20"/>
+  <xacro:property name="body_width" value="0.20"/>
   <xacro:property name="body_height" value="0.08"/>
 
-  <link name="base_link"> /es el componente de la base del robot, mi primer punto de coordenadas
+  <xacro:property name="arm_length" value="0.22"/>
+  <xacro:property name="arm_width" value="0.025"/>
+  <xacro:property name="arm_height" value="0.025"/>
 
-    <visual> /el como y donde se va a ver
+  <xacro:property name="arm_radius" value="0.24"/>
 
-      <origin xyz="0 0 0" rpy="0 0 0"/> /don de aparece el robot y no se que es rpy
-
-      <geometry> /la geometria del robot su ancho largo y alto
+  <link name="base_link">
+    <visual>
+      <geometry>
         <box size="${body_length}
                    ${body_width}
                    ${body_height}"/>
       </geometry>
 
-      <material name="dark_gray"> /el de que esta hecho con su color y transparencia le puso un nombre y todo
+      <material name="dark_gray">
         <color rgba="0.25 0.28 0.32 1.0"/>
       </material>
-
     </visual>
-
   </link>
+
+  <xacro:macro name="create_arm"
+               params="name x y yaw">
+
+    <link name="${name}_arm">
+      <visual>
+        <geometry>
+          <box size="${arm_length}
+                     ${arm_width}
+                     ${arm_height}"/>
+        </geometry>
+
+        <material name="arm_gray">
+          <color rgba="0.65 0.68 0.72 1.0"/>
+        </material>
+      </visual>
+    </link>
+
+    <joint name="${name}_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="${name}_arm"/>
+
+      <origin xyz="${x} ${y} 0"
+              rpy="0 0 ${yaw}"/>
+    </joint>
+
+  </xacro:macro>
+
+  <xacro:create_arm
+      name="front_left"
+      x="${arm_radius*cos(pi/4)}"
+      y="${arm_radius*sin(pi/4)}"
+      yaw="${pi/4}"/>
+
+  <xacro:create_arm
+      name="front_right"
+      x="${arm_radius*cos(-pi/4)}"
+      y="${arm_radius*sin(-pi/4)}"
+      yaw="${-pi/4}"/>
+
+  <xacro:create_arm
+      name="rear_left"
+      x="${arm_radius*cos(3*pi/4)}"
+      y="${arm_radius*sin(3*pi/4)}"
+      yaw="${3*pi/4}"/>
+
+  <xacro:create_arm
+      name="rear_right"
+      x="${arm_radius*cos(-3*pi/4)}"
+      y="${arm_radius*sin(-3*pi/4)}"
+      yaw="${-3*pi/4}"/>
 
 </robot>
