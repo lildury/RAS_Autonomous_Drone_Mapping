@@ -13,6 +13,13 @@
 
   <xacro:property name="arm_radius" value="0.24"/>
 
+  <xacro:property name="motor_radius" value="0.035"/>
+  <xacro:property name="motor_height" value="0.045"/>
+
+  <xacro:property name="propeller_length" value="0.18"/>
+  <xacro:property name="propeller_width" value="0.016"/>
+  <xacro:property name="propeller_height" value="0.005"/>
+
   <link name="base_link">
     <visual>
       <geometry>
@@ -54,11 +61,82 @@
 
   </xacro:macro>
 
+  <xacro:macro name="create_motor"
+             params="name">
+
+    <link name="${name}_motor">
+
+      <visual>
+        <geometry>
+          <cylinder
+            radius="${motor_radius}"
+            length="${motor_height}"/>
+        </geometry>
+
+        <material name="motor_black">
+          <color rgba="0.12 0.14 0.17 1.0"/>
+        </material>
+      </visual>
+
+    </link>
+
+    <joint name="${name}_motor_joint" type="fixed">
+
+      <parent link="${name}_arm"/>
+      <child link="${name}_motor"/>
+
+      <origin
+        xyz="${arm_length/2} 0 0.025"
+        rpy="0 0 0"/>
+
+    </joint>
+
+      <link name="${name}_propeller">
+
+      <visual>
+        <geometry>
+          <box size="${propeller_length}
+                     ${propeller_width}
+                     ${propeller_height}"/>
+        </geometry>
+
+        <material name="propeller_blue">
+          <color rgba="0.15 0.45 0.85 1.0"/>
+        </material>
+      </visual>
+
+      <visual>
+        <geometry>
+          <box size="${propeller_width}
+                     ${propeller_length}
+                     ${propeller_height}"/>
+        </geometry>
+
+        <material name="propeller_blue">
+          <color rgba="0.15 0.45 0.85 1.0"/>
+        </material>
+      </visual>
+
+    </link>
+
+    <joint name="${name}_propeller_joint"
+           type="continuous">
+
+      <parent link="${name}_motor"/>
+      <child link="${name}_propeller"/>
+
+      <origin xyz="0 0 0.035" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+
+    </joint>
+
+  </xacro:macro>
+
   <xacro:create_arm
-      name="front_left"
-      x="${arm_radius*cos(pi/4)}"
-      y="${arm_radius*sin(pi/4)}"
-      yaw="${pi/4}"/>
+        name="front_left"
+        x="${arm_radius*cos(pi/4)}"
+        y="${arm_radius*sin(pi/4)}"
+        yaw="${pi/4}"/>
 
   <xacro:create_arm
       name="front_right"
@@ -77,5 +155,10 @@
       x="${arm_radius*cos(-3*pi/4)}"
       y="${arm_radius*sin(-3*pi/4)}"
       yaw="${-3*pi/4}"/>
+
+  <xacro:create_motor name="front_left"/>
+  <xacro:create_motor name="front_right"/>
+  <xacro:create_motor name="rear_left"/>
+  <xacro:create_motor name="rear_right"/>
 
 </robot>
